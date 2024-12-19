@@ -84,7 +84,6 @@ services:
 
   n8n-import:
     <<: *service-n8n
-    container_name: n8n-import
     entrypoint: /bin/sh
     command:
       - "-c"
@@ -97,7 +96,6 @@ services:
 
   n8n:
     <<: *service-n8n
-    container_name: n8n
     restart: unless-stopped
     ports:
       - 5678:5678
@@ -113,7 +111,6 @@ services:
 
   qdrant:
     image: qdrant/qdrant
-    container_name: qdrant
     restart: unless-stopped
     ports:
       - 6333:6333
