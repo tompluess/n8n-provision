@@ -1,8 +1,19 @@
 volumes:
-  n8n_storage:
   postgres_storage:
   ollama_storage:
   qdrant_storage:
+  caddy_data:
+      driver: local
+      driver_opts:
+        type: none
+        o: bind
+        device: ${DATA_FOLDER}/caddy
+  n8n_data:
+      driver: local
+      driver_opts:
+        type: none
+        o: bind
+        device: ${DATA_FOLDER}/n8n
 
 networks:
   demo:
@@ -19,6 +30,8 @@ x-n8n: &service-n8n
     - N8N_PERSONALIZATION_ENABLED=false
     - N8N_ENCRYPTION_KEY
     - N8N_USER_MANAGEMENT_JWT_SECRET
+    - WEBHOOK_URL=https://${SUBDOMAIN}.${DOMAIN_NAME}/
+    - GENERIC_TIMEZONE=${GENERIC_TIMEZONE}
   links:
     - postgres
 
@@ -44,6 +57,17 @@ x-init-ollama: &init-ollama
     - "sleep 3; OLLAMA_HOST=ollama:11434 ollama pull llama3.2"
 
 services:
+  caddy:
+    image: caddy:latest
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - caddy_data:/data
+      - ${DATA_FOLDER}/caddy_config:/config
+      - ${DATA_FOLDER}/caddy_config/Caddyfile:/etc/caddy/Caddyfile
+
   postgres:
     image: postgres:16-alpine
     networks: ['demo']
@@ -80,7 +104,7 @@ services:
     ports:
       - 5678:5678
     volumes:
-      - n8n_storage:/home/node/.n8n
+      - n8n_data:/home/node/.n8n
       - ./n8n/backup:/backup
       - ./shared:/data/shared
     depends_on:
