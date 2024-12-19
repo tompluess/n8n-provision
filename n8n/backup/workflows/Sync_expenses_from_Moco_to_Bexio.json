@@ -1,5 +1,5 @@
 {
-  "name": "Sync expenses with attachments from Moco to Bexio",
+  "name": "Sync expenses from Moco to Bexio",
   "nodes": [
     {
       "parameters": {
@@ -48,7 +48,7 @@
       "alwaysOutputData": true,
       "credentials": {
         "httpHeaderAuth": {
-          "id": "BCwuyZrThlVBCjej",
+          "id": "Gpu4G2grbEtNuoyt",
           "name": "Bexio Header Auth"
         }
       }
@@ -118,7 +118,7 @@
       "name": "Create contact in Bexio",
       "credentials": {
         "httpHeaderAuth": {
-          "id": "BCwuyZrThlVBCjej",
+          "id": "Gpu4G2grbEtNuoyt",
           "name": "Bexio Header Auth"
         }
       }
@@ -140,8 +140,8 @@
       "name": "Get company from Moco",
       "credentials": {
         "httpHeaderAuth": {
-          "id": "xY6ZJzd8crctJWOX",
-          "name": "Moco Header Authentication"
+          "id": "Jqt40TwPSBpgHF4O",
+          "name": "Moco Header Auth"
         }
       }
     },
@@ -159,15 +159,15 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1520,
-        -20
+        1740,
+        -60
       ],
       "id": "6929fb37-feda-4609-81b1-fe273d475041",
       "name": "Create Bill in Bexio",
       "alwaysOutputData": false,
       "credentials": {
         "httpHeaderAuth": {
-          "id": "BCwuyZrThlVBCjej",
+          "id": "Gpu4G2grbEtNuoyt",
           "name": "Bexio Header Auth"
         }
       }
@@ -233,7 +233,7 @@
       "alwaysOutputData": false,
       "credentials": {
         "httpHeaderAuth": {
-          "id": "BCwuyZrThlVBCjej",
+          "id": "Gpu4G2grbEtNuoyt",
           "name": "Bexio Header Auth"
         }
       }
@@ -332,15 +332,15 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1700,
-        -440
+        1800,
+        -560
       ],
       "id": "29c07f74-3de4-4e68-9cd7-5fd5392f44ef",
       "name": "Update Bill in Bexio",
       "alwaysOutputData": false,
       "credentials": {
         "httpHeaderAuth": {
-          "id": "BCwuyZrThlVBCjej",
+          "id": "Gpu4G2grbEtNuoyt",
           "name": "Bexio Header Auth"
         }
       }
@@ -363,7 +363,7 @@
       "alwaysOutputData": false,
       "credentials": {
         "httpHeaderAuth": {
-          "id": "BCwuyZrThlVBCjej",
+          "id": "Gpu4G2grbEtNuoyt",
           "name": "Bexio Header Auth"
         }
       }
@@ -399,7 +399,7 @@
       "alwaysOutputData": false,
       "credentials": {
         "httpHeaderAuth": {
-          "id": "BCwuyZrThlVBCjej",
+          "id": "Gpu4G2grbEtNuoyt",
           "name": "Bexio Header Auth"
         }
       }
@@ -463,7 +463,7 @@
       "name": "Upload file to Bexio",
       "credentials": {
         "httpHeaderAuth": {
-          "id": "BCwuyZrThlVBCjej",
+          "id": "Gpu4G2grbEtNuoyt",
           "name": "Bexio Header Auth"
         }
       }
@@ -526,15 +526,15 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1880,
+        1960,
         -440
       ],
       "id": "99073a72-285e-4333-9286-ddc782b5d409",
       "name": "Comment in Moco",
       "credentials": {
         "httpHeaderAuth": {
-          "id": "xY6ZJzd8crctJWOX",
-          "name": "Moco Header Authentication"
+          "id": "Jqt40TwPSBpgHF4O",
+          "name": "Moco Header Auth"
         }
       }
     },
@@ -557,7 +557,7 @@
       "alwaysOutputData": false,
       "credentials": {
         "httpHeaderAuth": {
-          "id": "BCwuyZrThlVBCjej",
+          "id": "Gpu4G2grbEtNuoyt",
           "name": "Bexio Header Auth"
         }
       }
@@ -583,15 +583,15 @@
       "name": "Comment Booked in Moco",
       "credentials": {
         "httpHeaderAuth": {
-          "id": "xY6ZJzd8crctJWOX",
-          "name": "Moco Header Authentication"
+          "id": "Jqt40TwPSBpgHF4O",
+          "name": "Moco Header Auth"
         }
       }
     },
     {
       "parameters": {
         "mode": "runOnceForEachItem",
-        "jsCode": "return { \"id\": $('Get Bill from Bexio').first().json.id || $('Create Bill in Bexio').first().json.id }"
+        "jsCode": "return { \"id\": $('Get Bill from Bexio').first().json.id || $('Create Bill in Bexio').first().json.id || $('Create Manual Bill in Bexio').first().json.id }"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -616,15 +616,163 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
       "position": [
-        1760,
-        -20
+        1940,
+        -60
       ],
       "id": "e877cc33-f4c6-4000-a900-eac7633d6be5",
       "name": "Comment Bill creation in Moco",
       "credentials": {
         "httpHeaderAuth": {
-          "id": "xY6ZJzd8crctJWOX",
-          "name": "Moco Header Authentication"
+          "id": "Jqt40TwPSBpgHF4O",
+          "name": "Moco Header Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c19ed051-bb56-40f8-9539-840781a3a35f",
+              "leftValue": "={{ $('Extract Purchase').item.json.body.iban }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1520,
+        40
+      ],
+      "id": "96149fd8-1c9c-4b29-a94e-679787e827c4",
+      "name": "If has IBAN"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.bexio.com/4.0/purchase/bills",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"supplier_id\": {{ $('Search Contact in Bexio').item.json.id }},\n  \"vendor_ref\": \"{{ $('Extract Purchase').item.json.body.receipt_identifier || \"-\" }}\",\n  \"title\": \"{{ $('Extract Purchase').item.json.body.title }}\",\n  \"contact_partner_id\": 2,\n  \"bill_date\": \"{{ $('Extract Purchase').item.json.body.date }}\",\n  \"due_date\": \"{{ $('Extract Purchase').item.json.body.due_date || new Date(new Date($('Update Purchase').item.json.body.date).setDate(new Date($('Update Purchase').item.json.body.date).getDate() + 30)).toISOString().split('T')[0] }}\",\n  \"amount_man\": {{ $('Extract Purchase').item.json.body.gross_total }},\n  \"manual_amount\": true,\n  \"currency_code\": \"CHF\",\n  \"item_net\": false,\n  \"qr_bill_information\": \"todo\",\n  \"address\": {\n    \"lastname_company\": \"{{ $('Extract Purchase').item.json.body.company.name }}\",\n    \"country_code\": \"CH\",\n    \"type\": \"COMPANY\"\n  },\n  \"line_items\": [\n    {\n      \"position\": 0,\n      \"title\": \"{{ $('Extract Purchase').item.json.body.items[0].title }}\",\n      \"amount\": {{ $('Extract Purchase').item.json.body.items[0].gross_total }},\n      \"booking_account_id\": {{ $('Lookup Account in Bexio').item.json.id || $json.line_items[0].booking_account_id}},\n      \"tax_id\": {{ $('Lookup Account in Bexio').item.json.tax_id || 10}}\n    }\n  ],\n  \"discounts\": [],\n  \"payment\": {\n    \"type\": \"MANUAL\",\n    \"bank_account_id\": 3,\n    \"fee\": \"BY_SENDER\",\n    \"execution_date\": \"{{ $('Extract Purchase').item.json.body.due_date || new Date(new Date($('Extract Purchase').item.json.body.date).setDate(new Date($('Extract Purchase').item.json.body.date).getDate() + 20)).toISOString().split('T')[0] }}\",\n    \"amount\": {{ $('Extract Purchase').item.json.body.gross_total }},\n    \"name\": \"{{ $('Extract Purchase').item.json.body.company.name }}\",\n    \"message\": \"{{ $('Extract Purchase').item.json.body.receipt_identifier }}\",\n    \"booking_text\": \"{{ $('Extract Purchase').item.json.body.receipt_identifier }}\",\n    \"salary_payment\": false,\n    {{ $('Extract Purchase').item.json.body.reference ? \"\\\"reference_no\\\": \\\"\" + $('Extract Purchase').item.json.body.reference + \"\\\",\": \"\" }}\n    \"note\": \"{{ ($('Extract Purchase').item.json.body.company.name + \" - \" + ($('Extract Purchase').item.json.body.receipt_identifier||\"\" + \" - \") + ($('Extract Purchase').item.json.body.info || \"\")).substring(0, 80)}}\" \n  },\n  \"attachment_ids\": {{ $('Upload file to Bexio').item.json.uuid ? \"[\\\"\"+$('Upload file to Bexio').item.json.uuid+\"\\\"]\" : \"[]\"}} \n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1740,
+        160
+      ],
+      "id": "24393164-61d6-4703-ad75-8669c7c77ae9",
+      "name": "Create Manual Bill in Bexio",
+      "alwaysOutputData": false,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "Gpu4G2grbEtNuoyt",
+          "name": "Bexio Header Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://solar.mocoapp.com/api/v1/comments",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"commentable_id\": {{ $('Extract Purchase').item.json.body.id }},\n    \"commentable_type\": \"Purchase\",\n    \"text\": \"Lieferantenrechnung mit individueller Zahlung in Bexio erstellt: https://office.bexio.com/index.php/kb_bill/list#/show/{{ $('Create Manual Bill in Bexio').item.json.id }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1940,
+        160
+      ],
+      "id": "56515095-f7d6-4c6a-b8e0-434bd569d51f",
+      "name": "Comment Manual Bill creation",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "Jqt40TwPSBpgHF4O",
+          "name": "Moco Header Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "c19ed051-bb56-40f8-9539-840781a3a35f",
+              "leftValue": "={{ $('Extract Purchase').item.json.body.iban }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1660,
+        -440
+      ],
+      "id": "9dd9765c-ba37-40df-b19d-63444df9ea53",
+      "name": "If has IBAN1"
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "=https://api.bexio.com/4.0/purchase/bills/{{ $('Get Bill from Bexio').item.json.id }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"supplier_id\": {{ $json.supplier_id }},\n  \"vendor_ref\": \"{{ $json.vendor_ref }}\",\n  \"document_no\": \"{{ $json.document_no }}\",\n  \"title\": \"{{ $('Extract Purchase').item.json.body.title }}\",\n  \"contact_partner_id\": 2,\n  \"bill_date\": \"{{ $('Extract Purchase').item.json.body.date }}\",\n  \"due_date\": \"{{ $('Extract Purchase').item.json.body.due_date || new Date(new Date($('Update Purchase').item.json.body.date).setDate(new Date($('Update Purchase').item.json.body.date).getDate() + 30)).toISOString().split('T')[0] }}\",\n  \"amount_man\": {{ $('Extract Purchase').item.json.body.gross_total }},\n  \"manual_amount\": true,\n  \"currency_code\": \"CHF\",\n  \"address\": {\n    \"lastname_company\": \"{{ $('Extract Purchase').item.json.body.company.name }}\",\n    \"country_code\": \"CH\",\n    \"type\": \"COMPANY\"\n  },\n  \"split_into_line_items\": {{ $json.split_into_line_items }},\n  \"item_net\": false,\n  \"line_items\": [\n    {\n      \"position\": 0,\n      \"title\": \"{{ $('Extract Purchase').item.json.body.items[0].title }}\",\n      \"amount\": {{ $('Extract Purchase').item.json.body.items[0].gross_total }},\n      \"booking_account_id\": {{ $('Lookup Account in Bexio').item.json.id || $json.line_items[0].booking_account_id}},\n      \"tax_id\": {{ $('Lookup Account in Bexio').item.json.tax_id || $json.line_items[0].tax_id || 10 }}\n    }\n  ],\n  \"discounts\": [],\n  \"payment\": {\n    \"type\": \"MANUAL\",\n    \"bank_account_id\": 3,\n    \"fee\": \"BY_SENDER\",\n    \"execution_date\": \"{{ $('Extract Purchase').item.json.body.due_date || new Date(new Date($('Extract Purchase').item.json.body.date).setDate(new Date($('Extract Purchase').item.json.body.date).getDate() + 20)).toISOString().split('T')[0] }}\",\n    \"amount\": {{ $('Extract Purchase').item.json.body.gross_total }},\n    \"name\": \"{{ $('Extract Purchase').item.json.body.company.name }}\",\n    \"country_code\": \"CH\",\n    \"message\": \"{{ $('Extract Purchase').item.json.body.receipt_identifier }}\",\n    \"booking_text\": \"{{ $('Extract Purchase').item.json.body.receipt_identifier }}\",\n    \"salary_payment\": false,\n    {{ $('Extract Purchase').item.json.body.reference ? \"\\\"reference_no\\\": \\\"\" + $('Extract Purchase').item.json.body.reference + \"\\\",\": \"\" }}\n    \"note\": \"{{ ($('Extract Purchase').item.json.body.company.name + \" - \" + ($('Extract Purchase').item.json.body.receipt_identifier||\"\" + \" - \") + ($('Extract Purchase').item.json.body.info || \"\")).substring(0, 80)}}\" \n  },\n  \"attachment_ids\": {{ $('Search Bill in Bexio').item.json.data[0].attachment_ids ? \"[\\\"\"+$('Search Bill in Bexio').item.json.data[0].attachment_ids+\"\\\"]\" : $('Upload file to Bexio').item.json.uuid ? \"[\\\"\"+$('Upload file to Bexio').item.json.uuid+\"\\\"]\" : \"[]\"}} \n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1800,
+        -340
+      ],
+      "id": "22c7d3d5-1d22-4b13-8495-e58abc5fcc22",
+      "name": "Update Manual Bill in Bexio",
+      "alwaysOutputData": false,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "Gpu4G2grbEtNuoyt",
+          "name": "Bexio Header Auth"
         }
       }
     }
@@ -1082,7 +1230,7 @@
         ],
         [
           {
-            "node": "Create Bill in Bexio",
+            "node": "If has IBAN",
             "type": "main",
             "index": 0
           }
@@ -1093,7 +1241,7 @@
       "main": [
         [
           {
-            "node": "Update Bill in Bexio",
+            "node": "If has IBAN1",
             "type": "main",
             "index": 0
           }
@@ -1205,6 +1353,75 @@
           }
         ]
       ]
+    },
+    "If has IBAN": {
+      "main": [
+        [
+          {
+            "node": "Create Bill in Bexio",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create Manual Bill in Bexio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create Manual Bill in Bexio": {
+      "main": [
+        [
+          {
+            "node": "Comment Manual Bill creation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Comment Manual Bill creation": {
+      "main": [
+        [
+          {
+            "node": "Extract Bill id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If has IBAN1": {
+      "main": [
+        [
+          {
+            "node": "Update Bill in Bexio",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update Manual Bill in Bexio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Manual Bill in Bexio": {
+      "main": [
+        [
+          {
+            "node": "Comment in Moco",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
@@ -1212,9 +1429,9 @@
     "executionOrder": "v1",
     "callerPolicy": "workflowsFromSameOwner"
   },
-  "versionId": "d60b5630-efed-43d1-b136-0cbbe1278176",
+  "versionId": "b331db46-ab20-4d43-8e7d-4a23ea3c991f",
   "meta": {
-    "instanceId": "eb2ac56c7fd74d109ed432e0a1e8b42de5da71fa0aab79a31d38ab80211fd231"
+    "instanceId": "807b8f39e42cc2ae5d93d7ac96285beb9fd4cf8062c66f290e51dd675c73dc26"
   },
   "id": "yfHXrEvRoatvWes3",
   "tags": []
