@@ -4,7 +4,8 @@ Self-hosted n8n - these are my provision scripts.
 
 ## Setup
 
-* copy and adapt the `caddy_config` folder to your `$DATA_FOLDER`.
+* Copy `example.env` to `.env` and adapt it.
+* Copy and adapt the `caddy_config` folder to your `$DATA_FOLDER`.
 
 
 ## n8n Workflows

@@ -1,1 +1,5 @@
+# find an example for .env in example.env
+.env
+
+# local ./data is used as default for DATA_FOLDER
 /data
