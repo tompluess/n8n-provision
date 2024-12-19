@@ -1,5 +1,10 @@
 volumes:
   postgres_storage:
+      driver: local
+      driver_opts:
+        type: none
+        o: bind
+        device: ${DATA_FOLDER}/postgres
   ollama_storage:
   qdrant_storage:
   caddy_data:
