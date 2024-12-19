@@ -1,0 +1,86 @@
+{
+  "name": "Nop workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "4c6b97ef-2abf-4eee-ade0-bd9101ef4a3d",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "cf311670-ad85-4daf-bb0c-cdc18d2002d3",
+      "name": "Webhook",
+      "webhookId": "4c6b97ef-2abf-4eee-ade0-bd9101ef4a3d"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        220,
+        0
+      ],
+      "id": "f8ab6358-16c9-4010-b773-30f69dee05b4",
+      "name": "No Operation, do nothing",
+      "notesInFlow": true,
+      "notes": "Hello World"
+    }
+  ],
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "localhost:5678",
+            "connection": "keep-alive",
+            "sec-ch-ua": "\"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\"",
+            "sec-ch-ua-mobile": "?0",
+            "sec-ch-ua-platform": "\"macOS\"",
+            "upgrade-insecure-requests": "1",
+            "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
+            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+            "sec-fetch-site": "none",
+            "sec-fetch-mode": "navigate",
+            "sec-fetch-user": "?1",
+            "sec-fetch-dest": "document",
+            "accept-encoding": "gzip, deflate, br, zstd",
+            "accept-language": "en,de;q=0.9,en-US;q=0.8,es;q=0.7",
+            "cookie": "JSESSIONID.6b743f1d=1jzrcv2uvpmen1leh7bdjtbwg7; screenResolution=3840x1600; hideSilencedChecks=false; hideSilencedClients=false; hideBelowOccurrences=false; lfuuid=150d2e29-2d6e-4fb4-84f4-3cba1d27a357-c187065-sw2560-sh1440-ms1594989568714-r1256125; io=evNhXjsi4xELxU0wAAAZ; _app_session=hm0VV8dICbYnN8HCPf4mHx6Wdo3XTQRLcBxJoadJqA1luUIp%2Fd114fRI5vNrbNzO7ucMSvosszc2h%2FSkU1%2BJ91ubznOBfXDvADW%2BNBWDp5QqRDupZ4KBZDbmj%2BZgJTGZJFudpdfaNhh2n12aa4U5PeUzDPbkXWH%2B7gFdPBaURTEZgnX5hcOzw%2BgjVvq08QKBfvxFvdFMpOIB19JNXMo2E4vglmo1vbKEgMAQ0s2sp0HNHyvbv0WWu5j7D7ZBTeYk6Yulh%2BcP1hjOR8%2FVeQwfWFP%2BBONQkbwUgivtg4AP6xANq3BEjAL5zqK3jqMFSC2phdWEnAkGqKBEU5%2BrYBC4HpkXp8w1pWwFYJFIGvJTTSvTfz3xgdlTkbD%2FgxGNnLq2zYQAP1y7uv6iZ2L0YfMFqxcAXE2HsXSQOZXmO6wNk7jEI0LIhradyQEOF%2FzzCRzefXpDpRF9g1JTrl8Hzqiy8F06CYd5l95ZJFa0Z7hbFogXMO0k--o20bv%2BQS7JryvGPc--0vg%2FP%2BZ8Usc4MWa1hLIuwg%3D%3D; _moco_sync_session=lvobm3rqlfVVEG%2FHVp9KE6360PsNTjztQW6DPzSeaPsSJfBgQUJJF6C35sJbrfrcP%2FGCbd5f3r19kpbjtmzdYLqKV3nDTZcW7O%2BroVrlNarFT%2BebIaGzfJ6agDtbb5K6LMuiyYQACxnJLYzfBwLRc1uhH%2BP1bmXhqJpiA9JJIhHASbTdpx%2BxKe6u86yWNc5QGiQzHWpLuYVpN3EsgIrojBP4cym9AAntQBsO1GkRkQQaEXQpn2yUDjyh4dWzSEYIW7uXMsdvYt0xL%2FVoG39NzyAk8qhDnVbERl4%3D--VXNGVb8tIXoSDdWI--zhVgEJP3zLsDf%2BhTrxBTBg%3D%3D; n8n-auth=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjJjNmJjY2U0LThkN2YtNGE3Ny05MWM0LTcxOTUyNzcxZTU1YyIsImhhc2giOiJYVkJ4aUFFMUFmIiwiYnJvd3NlcklkIjoiQmRTaGxBWlV3eHR6a2RVbHpNOUFlemFFZ2gzY3R6TllXb3E1NzZHb0xIST0iLCJpYXQiOjE3MzQ2MjcwNjAsImV4cCI6MTczNTIzMTg2MH0.hYmdgX9gq7HH_5OkA6OAFa5JvOmTLyDmXFEVl4foYPQ"
+          },
+          "params": {},
+          "query": {},
+          "body": {},
+          "webhookUrl": "http://localhost:5678/webhook-test/4c6b97ef-2abf-4eee-ade0-bd9101ef4a3d",
+          "executionMode": "test"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "60faaea5-e8d2-4f15-9499-24de8aec75aa",
+  "meta": {
+    "instanceId": "558d88703fb65b2d0e44613bc35916258b0f0bf983c5d4730c00c424b77ca36a"
+  },
+  "id": "0oS1qRUTj6E8XgMQ",
+  "tags": []
+}
