@@ -1,0 +1,1224 @@
+{
+  "name": "Sync invoices from Moco to Bexio",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ddbcd874-2d88-48b9-b3bc-2a02b21c3622",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -80,
+        0
+      ],
+      "id": "792f444f-51fe-4748-9c6d-70f5984ff13f",
+      "name": "Update Invoice in Moco",
+      "webhookId": "ddbcd874-2d88-48b9-b3bc-2a02b21c3622"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "44fc196e-0f84-4212-99da-2b33230c2e8a",
+              "leftValue": "={{ $json.body.status }}",
+              "rightValue": "sent",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        120,
+        0
+      ],
+      "id": "1ba9a861-02d6-4f91-94d1-b553c9308fda",
+      "name": "If status is sent"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        320,
+        220
+      ],
+      "id": "8cda13f6-5082-4e0a-82fa-fc8019c8faad",
+      "name": "Stop on wrong status",
+      "notes": "will only sync invoice to Bexio, when status is sent"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.bexio.com/2.0/kb_invoice",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"document_nr\": \"{{ $('Update Invoice in Moco').item.json.body.identifier }}\", \n  \"title\": \"{{ $('Update Invoice in Moco').item.json.body.title }}\",\n  \"contact_id\": {{ $('Search Contact in Bexio').item.json.id }}, \n  \"contact_sub_id\": null,\n  \"user_id\": 2,\n  \"pr_project_id\": null,\n  \"language_id\": 1,\n  \"bank_account_id\": 2,\n  \"currency_id\": 1,\n  \"payment_type_id\": 1,\n  \"header\": \"{{ $('Update Invoice in Moco').item.json.body.salutation.replaceAll(\"\\n\", \"  \") }}\",\n  \"footer\": \"{{ $('Update Invoice in Moco').item.json.body.footer.replaceAll(\"\\n\", \"  \") }}\",\n  \"mwst_type\": 0,\n  \"mwst_is_net\": true,\n  \"show_position_taxes\": false,\n  \"is_valid_from\": \"{{ $('Update Invoice in Moco').item.json.body.date }}\",\n  \"is_valid_to\": \"{{ $('Update Invoice in Moco').item.json.body.due_date }}\",\n  \"contact_address_manual\": \"{{ $('Update Invoice in Moco').item.json.body.recipient_address.replaceAll(\"\\n\", \"  \") }}\",\n  \"reference\": null,\n  \"api_reference\": \"{{ $('Update Invoice in Moco').item.json.body.identifier }}\",\n  \"template_slug\": \"{{ $('Get document templates from Bexio').item.json.template_slug }}\",\n  \"positions\": [\n    {\n      \"amount\": \"1\",\n      \"unit_id\": 1,\n      \"account_id\": {{ $('Lookup Account in Bexio').item.json.id }},\n      \"tax_id\": {{ $('Lookup Account in Bexio').item.json.tax_id }},\n      \"text\": \"{{ $('Update Invoice in Moco').item.json.body.identifier +\": \"+ $('Update Invoice in Moco').item.json.body.title }}\",\n      \"unit_price\": \"{{ $('Update Invoice in Moco').item.json.body.net_total }}\",\n      \"discount_in_percent\": \"0.000000\",\n      \"type\": \"KbPositionCustom\"\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1580,
+        -100
+      ],
+      "id": "b8dd6a84-28c9-4aa1-a528-0c7b28e40018",
+      "name": "Create invoice in Bexio",
+      "executeOnce": true,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "Gpu4G2grbEtNuoyt",
+          "name": "Bexio Header Auth"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "url": "https://api.bexio.com/3.0/document_templates",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1380,
+        -100
+      ],
+      "id": "ddb96bc4-fbf4-4ed0-a257-84df0d01af3c",
+      "name": "Get document templates from Bexio",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "Gpu4G2grbEtNuoyt",
+          "name": "Bexio Header Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.bexio.com/2.0/accounts/search",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "=[{\n\"field\": \"account_no\",\n\"value\": \"{{ $json.account_no }}\",\n\"criteria\": \"=\"\n}]",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1180,
+        -220
+      ],
+      "id": "c21e8cc5-5572-4f4e-88d3-bf06745d2d25",
+      "name": "Lookup Account in Bexio",
+      "alwaysOutputData": false,
+      "executeOnce": true,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "Gpu4G2grbEtNuoyt",
+          "name": "Bexio Header Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.bexio.com/2.0/contact/search",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "=[{\n\"field\": \"name_1\",\n\"value\": \"{{ $('Get Project from Moco').item.json.customer.name }}\",\n\"criteria\": \"like\"\n}]",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        580,
+        -100
+      ],
+      "id": "78ae72a9-7670-4417-bbef-237a46c24078",
+      "name": "Search Contact in Bexio",
+      "alwaysOutputData": true,
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "Gpu4G2grbEtNuoyt",
+          "name": "Bexio Header Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "8b19077d-4601-4d16-86c4-11598daf6da1",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "number",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        760,
+        -100
+      ],
+      "id": "598cf7a8-e781-418e-8e42-2bff7d399c47",
+      "name": "If contact exists",
+      "alwaysOutputData": false,
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.bexio.com/2.0/contact",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n\"nr\": null,\n\"contact_type_id\": 1,\n\"name_1\": \"{{ $('Get Project from Moco').item.json.customer.name }}\",\n\"name_2\": null,\n\"titel_id\": null,\n\"birthday\": null,\n\"address\": \"{{ $('Get Project from Moco').item.json.billing_address.split(\"\\n\")[1] }}\",\n\"postcode\": \"{{ $('Get Project from Moco').item.json.billing_address.split(\"\\n\")[2].split(\" \")[0] }}\",\n\"city\": \"{{ $('Get Project from Moco').item.json.billing_address.split(\"\\n\")[2].split(\" \")[1] }}\",\n\"country_id\": 1,\n\"mail\": \"{{ $('Get Project from Moco').item.json.billing_email_to || $('Get company from Moco').item.json.email }}\",\n\"phone_fixed\": \"{{ $('Get company from Moco').item.json.phone }}\",\n\"phone_mobile\": \"\",\n\"url\": \"{{ $('Get company from Moco').item.json.website }}\",\n\"skype_name\": \"\",\n\"remarks\": \"{{ $('Get Project from Moco').item.json.billing_address.replaceAll(\"\\n\",\"\\\\n\") + \"\\\\n\\\\n\" + new Date().toLocaleDateString() + \", Added from Moco via n8n\" }}\",\n\"user_id\": 2,\n\"owner_id\": 2\n} ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1140,
+        0
+      ],
+      "id": "8afdf13e-500f-494d-9eab-f40cf47d7bc9",
+      "name": "Create contact in Bexio",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "Gpu4G2grbEtNuoyt",
+          "name": "Bexio Header Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://solar.mocoapp.com/api/v1/companies/{{ $('Update Invoice in Moco').item.json.body.customer_id }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        940,
+        0
+      ],
+      "id": "2f8f093d-43e5-46bf-8e60-b5dc28bc5305",
+      "name": "Get company from Moco",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "Jqt40TwPSBpgHF4O",
+          "name": "Moco Header Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const projectLabels = $('Get Project from Moco').first().json.labels;\nfunction projectHasLabel(label)\n{\n    return projectLabels.indexOf(label) > -1;\n}\n\nlet account_no = 3000; // Aufträge (Material und Arbeit)\n\nif (projectHasLabel(\"ZEV\")) {\n    account_no = 3010; // Erlös Stromproduktion\n}\nif (projectHasLabel(\"Stromproduktion\")) {\n    account_no = 3010; // Erlös Stromproduktion\n}\nif (projectHasLabel(\"Dienstleistung\")) {\n    account_no = 3400; // Dienstleistungen Solaranlagen\n}\nif (projectHasLabel(\"Beratung\")) {\n    account_no = 3410; // Beratung Energie-Management\n}\nif (projectHasLabel(\"Wartung\")) {\n    account_no = 3450; // Service und Wartung\n}\nif (projectHasLabel(\"Personalverleih\")) {\n    account_no = 3480; // Dienstleistungen Personalverleih\n}\n\nreturn {\"account_no\": account_no}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        980,
+        -220
+      ],
+      "id": "59e87a1b-87d9-440e-a9c5-784979c31a0b",
+      "name": "Evaluate Profit Account",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://solar.mocoapp.com/api/v1/comments",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"commentable_id\": {{ $('Update Invoice in Moco').item.json.body.id }},\n    \"commentable_type\": \"Invoice\",\n    \"text\": \"Rechnung kann nicht nach Bexio gesandt werden. Fehler: {{ $json.error.message.replaceAll(\"\\\\\", \"\").replaceAll(\"\\\"\", \"\\\\\\\"\") }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1880,
+        60
+      ],
+      "id": "6e5ec7f5-d0c4-419d-a8a8-af4cec06e36e",
+      "name": "Comment Error in Moco",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "Jqt40TwPSBpgHF4O",
+          "name": "Moco Header Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.bexio.com/2.0/kb_invoice/{{ $json.id }}/comment",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"text\": \"Link zur Rechnung in Moco: https://solar.mocoapp.com/invoices/{{ $('Update Invoice in Moco').item.json.body.id }}\",\n  \"user_id\": 2,\n  \"user_name\": \"n8n API\",\n  \"is_public\": false\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1780,
+        -200
+      ],
+      "id": "8653aa7f-358a-485b-87ca-39baf5ef44d9",
+      "name": "Comment Invoice in Bexio",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "Gpu4G2grbEtNuoyt",
+          "name": "Bexio Header Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.bexio.com/2.0/kb_invoice/{{ $('Create invoice in Bexio').item.json.id }}/mark_as_sent",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1980,
+        -400
+      ],
+      "id": "c81e8c55-04e7-494c-8c17-1a9b8da95360",
+      "name": "Mark invoice as SENT in Bexio",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "Gpu4G2grbEtNuoyt",
+          "name": "Bexio Header Auth"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://solar.mocoapp.com/api/v1/comments",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n    \"commentable_id\": {{ $('Update Invoice in Moco').item.json.body.id }},\n    \"commentable_type\": \"Invoice\",\n    \"text\": \"Rechnung in Bexio erstellt: https://office.bexio.com/index.php/kb_invoice/show/id/{{ $('Create invoice in Bexio').item.json.id }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1980,
+        -200
+      ],
+      "id": "38de36d7-d60c-4b98-874e-aa8347802299",
+      "name": "Comment Invoice creation in Moco",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "Jqt40TwPSBpgHF4O",
+          "name": "Moco Header Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://api.bexio.com/2.0/kb_invoice/{{ $('Create invoice in Bexio').item.json.id }}/set_pending",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1980,
+        -580
+      ],
+      "id": "785b21ac-d95d-4255-877b-a89c2d983911",
+      "name": "Mark invoice as Open",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "Gpu4G2grbEtNuoyt",
+          "name": "Bexio Header Auth"
+        }
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "url": "=https://solar.mocoapp.com/api/v1/projects/{{ $('Update Invoice in Moco').item.json.body.project_id }}",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        320,
+        -100
+      ],
+      "id": "72b0aa82-05da-4cae-94b5-d056fb2df276",
+      "name": "Get Project from Moco",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "Jqt40TwPSBpgHF4O",
+          "name": "Moco Header Auth"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "Update Invoice in Moco": [
+      {
+        "json": {
+          "headers": {
+            "host": "n8n.skyr.ch",
+            "user-agent": "Ruby",
+            "content-length": "2540",
+            "accept": "*/*",
+            "accept-encoding": "gzip;q=1.0,deflate;q=0.6,identity;q=0.3",
+            "content-type": "application/json; charset=utf-8",
+            "x-forwarded-for": "185.14.156.131",
+            "x-forwarded-host": "n8n.skyr.ch",
+            "x-forwarded-proto": "https",
+            "x-moco-account-url": "solar",
+            "x-moco-event": "update",
+            "x-moco-signature": "66442617273a0ecfa79e3595251950697fd5b7f54acfd1625dd890887a457b81",
+            "x-moco-target": "Invoice",
+            "x-moco-timestamp": "1734710438211",
+            "x-moco-user-id": "933719334"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "id": 5064456,
+            "customer_id": 762286146,
+            "project_id": 947168988,
+            "identifier": "R240003",
+            "date": "2024-12-04",
+            "due_date": "2025-01-03",
+            "service_period": "12/2024",
+            "service_period_from": "2024-12-01",
+            "service_period_to": "2024-12-31",
+            "status": "sent",
+            "reversed": false,
+            "reversal_invoice_id": null,
+            "reversal": false,
+            "reversed_invoice_id": null,
+            "title": "Akonto – Muster-PVA 20kWp",
+            "recipient_address": "Muster AG\nMusterstrasse 123\n12345 Musterstadt",
+            "currency": "CHF",
+            "net_total": 5000,
+            "tax": 8.1,
+            "vat": {
+              "id": 107816,
+              "tax": 8.1,
+              "description": "",
+              "reverse_charge": false,
+              "intra_eu": false,
+              "print_gross_total": true,
+              "notice_tax_exemption": "",
+              "notice_tax_exemption_en": "",
+              "notice_tax_exemption_alt": "",
+              "active": true
+            },
+            "gross_total": 5405,
+            "discount": 0,
+            "cash_discount": 0,
+            "cash_discount_days": 0,
+            "debit_number": null,
+            "credit_number": null,
+            "locked": false,
+            "custom_properties": {},
+            "tags": [],
+            "user": {
+              "id": 933719334,
+              "firstname": "Tom",
+              "lastname": "Plüss"
+            },
+            "file_url": "https://data.mocoapp.com/objects/objects%2Faccounts%2F001e273d-b5e6-4bc3-9ff3-25c198249962%2Fdocuments%2F24247647%2F8a2752c696759c01.pdf/8a2752c696759c01.pdf?ai=001e273d-b5e6-4bc3-9ff3-25c198249962&ex=1734908399&s=TY_axrn-C96cMTZ9Mr9IsTl5xcNZKdjgrWt__9YXbJI&dl=1&fn=R240003+Akonto+-+Muster-PVA+20kWp.pdf",
+            "created_at": "2024-12-04T09:59:44Z",
+            "updated_at": "2024-12-20T16:00:38Z",
+            "created_on": "2024-12-04",
+            "updated_on": "2024-12-20",
+            "salutation": "<div>Sehr geehrte Damen und Herren<br><br>Wir erlauben uns, folgende Positionen in Rechnung zu stellen:</div>",
+            "footer": "<div>Bitte den Betrag von 5'405.00 CHF unter Angabe der Rechnungsnummer R240003 bis zum 03.01.2025 mit beiliegendem Einzahlungsschein&nbsp; überweisen.</div><div><br></div><div>Vielen Dank für den Auftrag und das damit verbundene Vertrauen.</div><div>Bei Fragen stehen wir sehr gerne zur Verfügung.<br><br>\n</div><div>Sonnige Grüsse</div><div>Tom Plüss</div><div><br></div><div>\n<strong>PVcontracting AG</strong> - CHE-148.458.912 MWST</div>",
+            "items": [
+              {
+                "id": 24963925,
+                "type": "item",
+                "title": "Akonto 20%",
+                "revenue_category_id": null,
+                "description": null,
+                "quantity": 0,
+                "unit": null,
+                "unit_price": 0,
+                "net_total": 5000
+              }
+            ],
+            "payments": [],
+            "reminders": [],
+            "internal_contact": {
+              "id": 933719334,
+              "firstname": "Tom",
+              "lastname": "Plüss"
+            },
+            "activity_hours_modified": false
+          },
+          "webhookUrl": "https://n8n.skyr.ch/webhook-test/ddbcd874-2d88-48b9-b3bc-2a02b21c3622",
+          "executionMode": "test"
+        }
+      }
+    ],
+    "Create contact in Bexio": [
+      {
+        "json": {
+          "id": 122,
+          "nr": "000121",
+          "contact_type_id": 1,
+          "name_1": "FLYERALARM - RatePAY GmbH",
+          "name_2": "",
+          "salutation_id": null,
+          "salutation_form": null,
+          "title_id": null,
+          "birthday": null,
+          "address": "Kasernenstrasse 1",
+          "postcode": "8004",
+          "city": "Zürich",
+          "country_id": 1,
+          "mail": "",
+          "mail_second": "",
+          "phone_fixed": "+41 44 583 15 67",
+          "phone_fixed_second": "",
+          "phone_mobile": "",
+          "fax": "",
+          "url": "https://www.flyeralarm.com/ch",
+          "skype_name": "",
+          "remarks": "FLYERALARM Store Zürich\nKasernenstrasse 1\n8004 Zürich\nSchweiz\n\n12/13/2024, Added from Moco via n8n",
+          "language_id": null,
+          "is_lead": false,
+          "contact_group_ids": null,
+          "contact_branch_ids": null,
+          "user_id": 2,
+          "owner_id": 2,
+          "profile_image": "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",
+          "updated_at": "2024-12-13 17:42:50"
+        }
+      }
+    ],
+    "Get company from Moco": [
+      {
+        "json": {
+          "id": 762286146,
+          "type": "customer",
+          "name": "Muster AG",
+          "website": "",
+          "email": null,
+          "billing_email_cc": null,
+          "phone": "",
+          "fax": "",
+          "address": "Muster AG\nMusterstrasse 123\n12345 Musterstadt",
+          "country_code": "CH",
+          "vat_identifier": null,
+          "alternative_correspondence_language": false,
+          "english_correspondence_language": false,
+          "tags": [],
+          "user": {
+            "id": 933719334,
+            "firstname": "Tom",
+            "lastname": "Plüss"
+          },
+          "labels": [],
+          "info": "",
+          "footer": null,
+          "custom_properties": {},
+          "created_at": "2024-11-27T11:23:10Z",
+          "updated_at": "2024-11-27T11:23:10Z",
+          "identifier": "K0002",
+          "intern": false,
+          "billing_tax": 8.1,
+          "billing_vat": {
+            "id": 107816,
+            "tax": 8.1,
+            "description": "",
+            "reverse_charge": false,
+            "intra_eu": false,
+            "print_gross_total": true,
+            "notice_tax_exemption": "",
+            "notice_tax_exemption_en": "",
+            "notice_tax_exemption_alt": "",
+            "active": true
+          },
+          "customer_vat": {
+            "id": 107816,
+            "tax": 8.1,
+            "description": "",
+            "reverse_charge": false,
+            "intra_eu": false,
+            "print_gross_total": true,
+            "notice_tax_exemption": "",
+            "notice_tax_exemption_en": "",
+            "notice_tax_exemption_alt": "",
+            "active": true
+          },
+          "currency": "CHF",
+          "custom_rates": false,
+          "include_time_report": false,
+          "billing_notes": "",
+          "default_discount": 0,
+          "default_cash_discount": 0,
+          "default_cash_discount_days": 0,
+          "default_invoice_due_days": 30,
+          "projects": [
+            {
+              "id": 947157500,
+              "identifier": "P24003",
+              "name": "Test Projekt Akonto",
+              "active": false,
+              "billable": true
+            },
+            {
+              "id": 947168988,
+              "identifier": "P24004",
+              "name": "Muster-PVA 20kWp",
+              "active": true,
+              "billable": true
+            }
+          ],
+          "debit_number": 1100
+        }
+      }
+    ],
+    "Search Contact in Bexio": [
+      {
+        "json": {
+          "id": 93,
+          "nr": "000092",
+          "contact_type_id": 1,
+          "name_1": "Muster AG",
+          "name_2": "",
+          "salutation_id": 0,
+          "salutation_form": null,
+          "title_id": null,
+          "birthday": null,
+          "address": "",
+          "postcode": "",
+          "city": "",
+          "country_id": 1,
+          "mail": "",
+          "mail_second": "",
+          "phone_fixed": "",
+          "phone_fixed_second": "",
+          "phone_mobile": "",
+          "fax": "",
+          "url": "",
+          "skype_name": "",
+          "remarks": "Muster AG\nMusterstrasse 123\n12345 Musterstadt\n\n12/12/2024, Added from Moco via n8n",
+          "language_id": null,
+          "is_lead": false,
+          "contact_group_ids": null,
+          "contact_branch_ids": null,
+          "user_id": 2,
+          "owner_id": 2,
+          "updated_at": "2024-12-12 17:10:00"
+        }
+      },
+      {
+        "json": {
+          "id": 113,
+          "nr": "000112",
+          "contact_type_id": 1,
+          "name_1": "Muster AG",
+          "name_2": "",
+          "salutation_id": 0,
+          "salutation_form": null,
+          "title_id": null,
+          "birthday": null,
+          "address": "",
+          "postcode": "",
+          "city": "",
+          "country_id": 1,
+          "mail": "",
+          "mail_second": "",
+          "phone_fixed": "",
+          "phone_fixed_second": "",
+          "phone_mobile": "",
+          "fax": "",
+          "url": "",
+          "skype_name": "",
+          "remarks": "Muster AG\nMusterstrasse 123\n12345 Musterstadt\n\n12/13/2024, Added from Moco via n8n",
+          "language_id": null,
+          "is_lead": false,
+          "contact_group_ids": null,
+          "contact_branch_ids": null,
+          "user_id": 2,
+          "owner_id": 2,
+          "updated_at": "2024-12-13 17:37:49"
+        }
+      }
+    ],
+    "Comment Error in Moco": [
+      {
+        "json": {
+          "id": 59555852,
+          "commentable_id": 5064456,
+          "commentable_type": "Invoice",
+          "text": "Rechnung kann nicht nach Bexio gesandt werden. Fehler: 422 - \"{\"error_code\":422,\"message\":\"The form could not be saved due to the following errors:\",\"errors\":[\"global: Diese Dokumentennummer wird bereits verwendet.\"]}\"",
+          "manual": true,
+          "created_at": "2024-12-21T12:33:19Z",
+          "updated_at": "2024-12-21T12:33:19Z",
+          "user": {
+            "id": 933719334,
+            "firstname": "Tom",
+            "lastname": "Plüss"
+          }
+        }
+      }
+    ],
+    "Comment Invoice creation in Moco": [
+      {
+        "json": {
+          "id": 59555852,
+          "commentable_id": 5064456,
+          "commentable_type": "Invoice",
+          "text": "Rechnung kann nicht nach Bexio gesandt werden. Fehler: 422 - \"{\"error_code\":422,\"message\":\"The form could not be saved due to the following errors:\",\"errors\":[\"global: Diese Dokumentennummer wird bereits verwendet.\"]}\"",
+          "manual": true,
+          "created_at": "2024-12-21T12:33:19Z",
+          "updated_at": "2024-12-21T12:33:19Z",
+          "user": {
+            "id": 933719334,
+            "firstname": "Tom",
+            "lastname": "Plüss"
+          }
+        }
+      }
+    ],
+    "Get Project from Moco": [
+      {
+        "json": {
+          "id": 947168988,
+          "identifier": "P24004",
+          "name": "Muster-PVA 20kWp",
+          "active": true,
+          "billable": true,
+          "fixed_price": false,
+          "retainer": false,
+          "start_date": null,
+          "finish_date": null,
+          "currency": "CHF",
+          "billing_variant": "project",
+          "billing_address": "Muster AG\nMusterstrasse 123\n12345 Musterstadt",
+          "billing_email_to": null,
+          "billing_email_cc": null,
+          "billing_notes": "",
+          "setting_include_time_report": false,
+          "budget": null,
+          "budget_monthly": null,
+          "budget_expenses": 0,
+          "hourly_rate": 150,
+          "info": "",
+          "color": "#ff26a8",
+          "customer_report_url": null,
+          "tags": [
+            "Auftrag",
+            "Test"
+          ],
+          "labels": [
+            "Auftrag",
+            "Test"
+          ],
+          "custom_properties": {
+            "Kommission": null,
+            "Aufwandkonto": null
+          },
+          "leader": {
+            "id": 933719334,
+            "firstname": "Tom",
+            "lastname": "Plüss"
+          },
+          "co_leader": null,
+          "customer": {
+            "id": 762286146,
+            "name": "Muster AG"
+          },
+          "tasks": [
+            {
+              "id": 25429988,
+              "name": "Beratung",
+              "billable": true,
+              "active": true,
+              "budget": null,
+              "hourly_rate": 150
+            },
+            {
+              "id": 25429987,
+              "name": "Montage / Solarteur",
+              "billable": true,
+              "active": true,
+              "budget": null,
+              "hourly_rate": 150
+            },
+            {
+              "id": 25429989,
+              "name": "Service & Wartung",
+              "billable": true,
+              "active": true,
+              "budget": null,
+              "hourly_rate": 150
+            },
+            {
+              "id": 25429986,
+              "name": "Projektleitung & Planung",
+              "billable": true,
+              "active": true,
+              "budget": null,
+              "hourly_rate": 150
+            },
+            {
+              "id": 25429990,
+              "name": "Akquise",
+              "billable": false,
+              "active": true,
+              "budget": null,
+              "hourly_rate": 150
+            }
+          ],
+          "contracts": [
+            {
+              "id": 471636409,
+              "user_id": 933719334,
+              "firstname": "Tom",
+              "lastname": "Plüss",
+              "billable": true,
+              "active": true,
+              "budget": null,
+              "hourly_rate": 150
+            }
+          ],
+          "deal": null,
+          "project_group": null,
+          "billing_contact": null,
+          "contact": null,
+          "secondary_contact": null,
+          "created_at": "2024-12-04T09:56:59Z",
+          "updated_at": "2024-12-04T09:56:59Z"
+        }
+      }
+    ],
+    "Evaluate Profit Account": [
+      {
+        "json": {
+          "account_no": 3000
+        }
+      }
+    ],
+    "Lookup Account in Bexio": [
+      {
+        "json": {
+          "id": 255,
+          "uuid": "baa6a8d8-eb0d-4a8c-91ff-9c5f0477a6f5",
+          "account_no": "3000",
+          "name": "Bruttoerlös Aufträge (Material und Arbeit)",
+          "account_type": 1,
+          "tax_id": 28,
+          "fibu_account_group_id": 151,
+          "is_active": true,
+          "is_locked": false
+        }
+      }
+    ],
+    "Get document templates from Bexio": [
+      {
+        "json": {
+          "template_slug": "64b2ffb45b211a32910cfca2",
+          "name": "Standardvorlage",
+          "is_default": true,
+          "default_for_document_types": [
+            "type_offer",
+            "type_order",
+            "type_invoice",
+            "type_delivery",
+            "type_credit_voucher",
+            "type_account_statement"
+          ]
+        }
+      }
+    ],
+    "Create invoice in Bexio": [
+      {
+        "json": {
+          "id": 58,
+          "document_nr": "R240003",
+          "title": "Akonto – Muster-PVA 20kWp",
+          "contact_id": 93,
+          "contact_sub_id": null,
+          "user_id": 2,
+          "project_id": null,
+          "logopaper_id": 1,
+          "language_id": 1,
+          "bank_account_id": 2,
+          "currency_id": 1,
+          "payment_type_id": 1,
+          "header": "<div>Sehr geehrte Damen und Herren<br><br>Wir erlauben uns, folgende Positionen in Rechnung zu stellen:</div>",
+          "footer": "<div>Bitte den Betrag von 5'405.00 CHF unter Angabe der Rechnungsnummer R240003 bis zum 03.01.2025 mit beiliegendem Einzahlungsschein&nbsp; überweisen.</div><div><br></div><div>Vielen Dank für den Auftrag und das damit verbundene Vertrauen.</div><div>Bei Fragen stehen wir sehr gerne zur Verfügung.<br><br>  </div><div>Sonnige Grüsse</div><div>Tom Plüss</div><div><br></div><div>  <strong>PVcontracting AG</strong> - CHE-148.458.912 MWST</div>",
+          "total_gross": "5000",
+          "total_net": "5000",
+          "total_taxes": "405.0000",
+          "total_received_payments": "0",
+          "total_credit_vouchers": "0",
+          "total_remaining_payments": "5405.0000",
+          "total": "5405",
+          "total_rounding_difference": 0,
+          "mwst_type": 0,
+          "mwst_is_net": true,
+          "show_position_taxes": false,
+          "is_valid_from": "2024-12-04",
+          "is_valid_to": "2025-01-03",
+          "contact_address": "Muster AG  Musterstrasse 123  12345 Musterstadt",
+          "kb_item_status_id": 7,
+          "reference": "",
+          "api_reference": "R240003",
+          "viewed_by_client_at": null,
+          "updated_at": "2024-12-21 18:51:21",
+          "esr_id": 43,
+          "qr_invoice_id": 43,
+          "template_slug": "64b2ffb45b211a32910cfca2",
+          "taxs": [
+            {
+              "percentage": "8.10",
+              "value": "405.0000"
+            }
+          ],
+          "positions": [
+            {
+              "id": 240,
+              "type": "KbPositionCustom",
+              "amount": "1",
+              "unit_id": 1,
+              "account_id": 255,
+              "unit_name": "Stk",
+              "tax_id": 28,
+              "tax_value": "8.10",
+              "text": "R240003: Akonto – Muster-PVA 20kWp",
+              "unit_price": "5000",
+              "discount_in_percent": "0",
+              "position_total": "5000",
+              "pos": "1",
+              "internal_pos": 1,
+              "parent_id": null,
+              "is_optional": false
+            }
+          ],
+          "network_link": ""
+        }
+      }
+    ],
+    "Comment Invoice in Bexio": [
+      {
+        "json": {
+          "id": 320,
+          "text": "Link zur Rechnung in Moco: https://solar.mocoapp.com/invoices/5064456",
+          "user_id": 2,
+          "user_email": "billing@pvcontracting.ch",
+          "user_name": "PVcontracting AG",
+          "date": "2024-12-21 18:51:31",
+          "is_public": false,
+          "image": "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",
+          "image_path": "https://my.bexio.com/profile/images/fa4213b7-f6f3-45fe-9d1c-33f1d9874aee.png?type=thumb"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Update Invoice in Moco": {
+      "main": [
+        [
+          {
+            "node": "If status is sent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If status is sent": {
+      "main": [
+        [
+          {
+            "node": "Get Project from Moco",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Stop on wrong status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get document templates from Bexio": {
+      "main": [
+        [
+          {
+            "node": "Create invoice in Bexio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lookup Account in Bexio": {
+      "main": [
+        [
+          {
+            "node": "Get document templates from Bexio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search Contact in Bexio": {
+      "main": [
+        [
+          {
+            "node": "If contact exists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If contact exists": {
+      "main": [
+        [
+          {
+            "node": "Evaluate Profit Account",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get company from Moco",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create contact in Bexio": {
+      "main": [
+        [
+          {
+            "node": "Search Contact in Bexio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get company from Moco": {
+      "main": [
+        [
+          {
+            "node": "Create contact in Bexio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Evaluate Profit Account": {
+      "main": [
+        [
+          {
+            "node": "Lookup Account in Bexio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create invoice in Bexio": {
+      "main": [
+        [
+          {
+            "node": "Comment Invoice in Bexio",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Comment Error in Moco",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Comment Invoice in Bexio": {
+      "main": [
+        [
+          {
+            "node": "Comment Invoice creation in Moco",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark invoice as SENT in Bexio": {
+      "main": [
+        [],
+        []
+      ]
+    },
+    "Get Project from Moco": {
+      "main": [
+        [
+          {
+            "node": "Search Contact in Bexio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "f14753e0-73d0-41e9-8c93-27e75e0e35c8",
+  "meta": {
+    "instanceId": "807b8f39e42cc2ae5d93d7ac96285beb9fd4cf8062c66f290e51dd675c73dc26"
+  },
+  "id": "3h66gqk4VVSt81cb",
+  "tags": []
+}
